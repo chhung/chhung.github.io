@@ -1,0 +1,122 @@
+<!DOCTYPE html>        
+<html>              
+<head>          
+<title>為什麼要有generic</title>            
+</head>           
+<body>          
+  <p>簡化重覆寫同樣的模式代碼。
+在還未使用Generic前，你可能會寫出這樣的代碼</p>
+<pre><code class="language-java">// 沒有泛型之前
+class IntList {
+    private int[] elements;
+
+    public IntList() {
+        elements = new int[0];
+    }
+
+    public void add(int element) {
+        int[] newElements = new int[elements.length + 1];
+        System.arraycopy(elements, 0, newElements, 0, elements.length);
+        newElements[elements.length] = element;
+        elements = newElements;
+    }
+
+    public int get(int index) {
+        return elements[index];
+    }
+
+    public void remove(int index) {
+        int[] newElements = new int[elements.length - 1];
+        System.arraycopy(elements, 0, newElements, 0, index);
+        System.arraycopy(elements, index + 1, newElements, index, elements.length - index - 1);
+        elements = newElements;
+    }
+}
+
+class StringList {
+    private String[] elements;
+
+    public StringList() {
+        elements = new String[0];
+    }
+
+    public void add(String element) {
+        String[] newElements = new String[elements.length + 1];
+        System.arraycopy(elements, 0, newElements, 0, elements.length);
+        newElements[elements.length] = element;
+        elements = newElements;
+    }
+
+    public String get(int index) {
+        return elements[index];
+    }
+
+    public void remove(int index) {
+        String[] newElements = new String[elements.length - 1];
+        System.arraycopy(elements, 0, newElements, 0, index);
+        System.arraycopy(elements, index + 1, newElements, index, elements.length - index - 1);
+        elements = newElements;
+    }
+}
+</code></pre>
+<p>而用Generic改寫後，會變成這樣</p>
+<pre><code class="language-java">// 使用泛型
+class List&lt;T&gt; {
+    private T[] elements;
+
+    public List() {
+        elements = new T[0];
+    }
+
+    public void add(T element) {
+        T[] newElements = new T[elements.length + 1];
+        System.arraycopy(elements, 0, newElements, 0, elements.length);
+        newElements[elements.length] = element;
+        elements = newElements;
+    }
+
+    public T get(int index) {
+        return elements[index];
+    }
+
+    public void remove(int index) {
+        T[] newElements = new T[elements.length - 1];
+        System.arraycopy(elements, 0, newElements, 0, index);
+        System.arraycopy(elements, index + 1, newElements, index, elements.length - index - 1);
+        elements = newElements;
+    }
+}
+</code></pre>
+<p><em>以上是從Gemini提供的範例</em>
+改寫後是不是簡化許多。謎之音：是什麼樣的應用會寫出這樣的程式碼？instance of可以解決吧?</p>
+<p>範例只是範例，從這裡得出第一個重點，就是，只要是相同演算法，但會有不同的型別來儲存資料，那麼直接上Generic來寫。</p>
+<p>有關於靜態變數設計成參數化型別(Parameterized Type)是不可行的。因為，靜態變數在多個instance之間是共用，而不同的instance會有不同的型別設計，這會變成矛盾問題，因此，直接就是靜態變數是不能宣告成參數化型別。</p>
+<p>但是，靜態方法就可以。但是，靜態方法也只有一份，因為早在類別new instance前就已經存在了，所以在方法回傳值前面的大於小於&lt;&gt;，這個就是單獨宣告參數型別，再仔細看，靜態方法的<code>&lt;T&gt;</code>與類別的中的<code>&lt;T&gt;</code>是被視為不一樣的。通常為了識別及閱讀，靜態方法的參數型別代號會與類別的參數型別代號分開。</p>
+<pre><code class="language-java">public class GenericDemo&lt;T,K,A&gt; {  
+  public static &lt;T&gt; T checkType(T in) {  
+    return in;  
+  }  
+}
+</code></pre>
+<h2 id="通常generic都用在哪些地方">通常Generic都用在哪些地方</h2>
+<ul>
+<li><p><strong>集合類別</strong>
+泛型可以用於實現集合類別，例如列表、集合、映射等。這可以使集合類別更通用、更易於使用。</p>
+</li>
+<li><p><strong>資料結構</strong>
+泛型可以用於實現資料結構，例如堆疊、佇列、樹等。這可以使資料結構更通用、更易於使用。</p>
+</li>
+<li><p><strong>演算法</strong>
+泛型可以用於實現演算法，例如排序、搜尋等。這可以使演算法更通用、更易於使用。</p>
+</li>
+<li><p><strong>自定義類別</strong>
+泛型可以用於實現自定義類別。這可以使自定義類別更通用、更易於使用。</p>
+</li>
+</ul>
+<p>前面三個是Java的函式庫最常見的，換句話說，你如果不懂泛型，那麼很可能在使用函式庫會有阻礙。
+而自定義類別則是在你自身領域中會碰到的商業邏輯或自訂義演算法。</p>
+<h2 id="常用作法是什麼">常用作法是什麼?</h2>       
+</body>                
+</html>
+
+
